@@ -27,7 +27,7 @@ phi_true = rgamma(Q, a_phi_true, b_phi_true)
 #--------# worker function #----------#
 run_one = function(r, r0_true) {
   library(rstan)
-  source("helper/helper_simulations.R")
+  source("functs/helper.R")
   rstan_options(auto_write = TRUE)
   options(mc.cores = n_chains)
   
@@ -37,7 +37,7 @@ run_one = function(r, r0_true) {
                     X = data_sim$X, b0 = b0, B0 = B0, a_phi = a_phi, b_phi = b_phi,
                     r0 = r0, nu0 = nu0)
   
-  fit_sim = stan(file = "helper/mosaic_NegBin.stan", data = stan_data, seed = mseed + r,
+  fit_sim = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = mseed + r,
                   chains = n_chains, iter = 2000, warmup = 1000)
 
   post = rstan::extract(fit_sim)

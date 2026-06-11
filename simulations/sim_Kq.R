@@ -10,8 +10,8 @@ options(mc.cores = 4)
 
 rm(list = ls())
 
-source("helper/helper_simulations.R")
-source("helper/helper_accumulation.R")
+source("functs/helper.R")
+source("functs/rarefaction.R")
 
 #--------------------# fixed settings (shared) #--------------------#
 # Nsim = 25
@@ -66,9 +66,9 @@ run_mosaic = function(sim, misspecified = FALSE, base_seed = 123) {
   stan_data = list(Q = Q, H = H, k = tt_split$k_train, n_q = tt_split$n_train,
                     m = tt_split$m_train, X = data_sim$X, b0 = b0, B0 = B0,
                     a_phi = 2, b_phi = 2, r0 = r0, nu0 = nu0)
-  # fit_sim = stan(file = "helper/mosaic_NegBin.stan", data = stan_data, seed = sim_seed,
+  # fit_sim = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = sim_seed,
   #                   chains = 4, iter = 2000, warmup = 1000)
-  fit_sim = stan(file = "helper/mosaic_NegBin.stan", data = stan_data, seed = sim_seed,
+  fit_sim = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = sim_seed,
                  chains = 4, iter = 200, warmup = 100)
   post_param = rstan::extract(fit_sim, pars = c("alpha_out", "theta_out"))
   

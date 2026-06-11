@@ -1,5 +1,5 @@
 
-#---# generate synthetic data #---#
+#--------------------------# generate synthetic data #-------------------------#
 
 synt_dataH = function(n, Q, beta, a_phi, b_phi, r0, nu0 = 3000, mseed = 123,
                       tau   = NULL,    # if not NULL: misspecified model with random intercept sd=tau
@@ -40,7 +40,8 @@ synt_dataH = function(n, Q, beta, a_phi, b_phi, r0, nu0 = 3000, mseed = 123,
 }
 
 
-#---# Splits a dataset into train/test subsets per group #----#
+#----------# Splits a dataset into train/test subsets per group #--------------#
+
 split_train_test = function(data, train_prop = 0.7,  test_n = NULL, mseed) {
   set.seed(mseed)
   Y = data$Y
@@ -93,7 +94,8 @@ split_train_test = function(data, train_prop = 0.7,  test_n = NULL, mseed) {
        "m_train" = m_train, "kq_train" = kq_train)
 }
 
-#----# Converts Y into a list of per-group matrices #----#
+#---------------# Converts Y into a list of per-group matrices #---------------#
+
 convertY_tolist = function(Y, n){
   Q = length(n)
   ends_n = cumsum(n)
@@ -111,4 +113,48 @@ compute_Kq = function(Y_list, labels = NULL) {
   out = sapply(Y_list, function(Y) sum(colSums(Y) > 0))
   if (!is.null(labels)) names(out) = labels
   out
+}
+
+
+#------------------# Jaccard and Sorensen dissimilarity index #----------------#
+
+jaccard_diss = function(x, y) {
+  intersection = sum(x & y)
+  union = sum(x | y)
+  if (union == 0) return(0)  
+  return(1 - intersection / union)
+}
+
+sorensen_diss = function(x, y) {
+  A = sum(x & y)
+  sx = sum(x)
+  sy = sum(y)
+  if ((sx + sy) == 0) return(0)
+  sr = (2 * A) / (sx + sy)  
+  return(1-sr)
+}
+
+Betadiss_data = function(Y, n, method){
+  ngroup = length(n)
+  ends_n = cumsum(n)
+  starts_n = c(1, head(ends_n, -1) + 1)
+  dissAll = rep(0, (ngroup*(ngroup-1))/2)
+  id=1
+  for(q in 1:(ngroup-1)){
+    Yg = Y[starts_n[q]:ends_n[q], ]
+    indq = as.integer(colSums(Yg == 1) > 0)
+    for(p in (q+1):ngroup){
+      Yp = Y[starts_n[p]:ends_n[p], ]
+      indp = as.integer(colSums(Yp == 1) > 0)
+      if(method=="Jaccard"){
+        dissAll[id] = jaccard_diss(indp, indq)
+        id = id+1
+      }
+      if(method=="Sorensen"){
+        dissAll[id] = sorensen_diss(indp, indq)
+        id = id+1
+      }
+    }
+  }
+  return(dissAll)
 }

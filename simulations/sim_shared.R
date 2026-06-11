@@ -8,10 +8,10 @@ options(mc.cores = 4)
 
 rm(list=ls())
 
-source("helper/helper_simulations.R")
-source("helper/helper_accumulation.R")
+source("functs/helper.R")
+source("functs/rarefaction.R")
 
-#----# generate data #---#
+#---# generate data #---#
 
 beta = c(-3, 0.5, -0.3)
 H = length(beta)
@@ -28,7 +28,7 @@ data_sim = synt_dataH(n = n, Q = Q, beta = beta, a_phi = a_phi_true,
                       b_phi = b_phi_true, mseed = mseed, N = N)
 tt_split = split_train_test(data_sim, train_prop = 0.6, mseed = mseed) 
 
-# ---# fit model #---#
+#---# fit model #---#
 
 b0 = c(-2,rep(0,H-1))
 B0 = diag(1, H)
@@ -40,7 +40,7 @@ b_phi = 2
 stan_data = list(Q = Q, H = H, k = tt_split$k_train, n_q = tt_split$n_train, 
                  m = tt_split$m_train, X = data_sim$X, b0 = b0, B0 = B0, 
                  a_phi = a_phi, b_phi = b_phi, r0 = r0, nu0 = nu0)
-fit_sim = stan(file = "helper/mosaic_NegBin.stan", data = stan_data, seed = mseed,
+fit_sim = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = mseed,
                  chains = 4, iter = 2000, warmup = 1000)
 
 post_param = rstan::extract(fit_sim, pars = c("alpha_out", "theta_out"))
