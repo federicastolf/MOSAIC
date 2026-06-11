@@ -11,5 +11,7 @@ Code and data for the analysis contained in Stolf, Rigon & Dunson (2026).
   - [fungi_oos_sm.R](fungi_oos_sm.R) contains the code to replicate the out-of-sample experiments for the fungi data presented in the supplementary material
   
 - #### simulations
-  - d
+  - [sim_Kq.R](sim_Kq.R) contains the code to replicate the experiments of the simulation study on the predictions of the site-specific rarefaction curves
+  - [sim_coverage.R](sim_coverage.R) and [sim_sm.R](sim_sm.R) contains the code to replicate the additional simulations for coverage and varying number of sites in the supplementary material
+  - [sim_shared.R](sim_shared.R) contains the code to replicate the experiments of the simulation study on the rarefaction surfaces for shared species
   - 
