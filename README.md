@@ -3,7 +3,10 @@
 Code and data for the analysis contained in Stolf, Rigon & Dunson (2026).
 
 - #### functs
-  - d
+  - [mosaic_NegBin.stan](mosaic_NegBin.stan) and [rarefaction.R](rarefaction.R) contain the R and stan code to run the MCMC algorithm for MOSAIC
+  - [Cwrapper.cpp](Cwrapper.cpp) contains C++ utility functions used across the project
+  - [helper.R](helper.R) contains miscellaneous R utility functions used across the project
+  - [rarefaction.R](rarefaction.R) contains R functions to compute empirical and model-based site-specific rarefaction curves and rarefaction surfaces for shared species
 
 - #### fungi_analysis
   - [fungiGSSP.Rdata](fungiGSSP.Rdata) are the fungi data from the Global Spore Sampling Project analyzed in the paper
