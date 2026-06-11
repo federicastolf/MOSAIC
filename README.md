@@ -6,7 +6,9 @@ Code and data for the analysis contained in Stolf, Rigon & Dunson (2026).
   - d
 
 - #### fungi_analysis
-  - d
+  - [fungiGSSP.Rdata](fungiGSSP.Rdata) are the fungi data from the Global Spore Sampling Project analyzed in the paper
+  - [fitFungi.R](fitFungi.R) contains the code to replicate the fungal biodiversity analysis presented in Section 5 of the paper
+  - [fungi_oos_sm.R](fungi_oos_sm.R) contains the code to replicate the out-of-sample experiments for the fungi data presented in the supplementary material
   
 - #### simulations
   - d
