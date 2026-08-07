@@ -33,8 +33,9 @@ d_n = function(n_q, a_q, b_q) {
 
 
 # model-based prediction for group-specific rarefaction curves
+
 rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed, 
-                           sigmaq = NULL) {
+                           p0_all, k, sigmaq = NULL) {
   set.seed(seed)
   B = length(alphaq)
   s_vec = 1:sq
@@ -49,12 +50,40 @@ rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed,
     else{
       ds = d_n(n = s_vec, a = -alphab, b =  sigmaq*(alphab + thetab) + nq)
     }
-    size = r0 + kq
-    mu = size * (1 - ds) * dn / (r0 / nu0 + 1 - dn)
-    ksn_chain[, b] = rnbinom(length(s_vec), size = size, mu = mu)
+    # Species never recorded at any site
+    size1 = r0 + k
+    mu = size1 * (1 - ds) * p0_all[b] / (r0 / nu0 + 1 - p0_all[b])
+    u1 = rnbinom(length(s_vec), size = size1, mu = mu)
+    # Species recorded at some other site but not at site q
+    u2 = rbinom(length(s_vec), size = k - kq, prob = 1 - ds)
+    ksn_chain[, b] = u1 + u2
   }
   return(ksn_chain + kq)
 }
+
+
+# rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed, 
+#                            sigmaq = NULL) {
+#   set.seed(seed)
+#   B = length(alphaq)
+#   s_vec = 1:sq
+#   ksn_chain = matrix(0, nrow = length(s_vec), ncol = B)
+#   for (b in 1:B) {
+#     alphab = alphaq[b]
+#     thetab = thetaq[b]
+#     dn = d_n(n = nq, a = -alphab, b = alphab + thetab)
+#     if (is.null(sigmaq)){
+#       ds = d_n(n = s_vec, a = -alphab, b = alphab + thetab + nq)
+#     }
+#     else{
+#       ds = d_n(n = s_vec, a = -alphab, b =  sigmaq*(alphab + thetab) + nq)
+#     }
+#     size = r0 + kq
+#     mu = size * (1 - ds) * dn / (r0 / nu0 + 1 - dn)
+#     ksn_chain[, b] = rnbinom(length(s_vec), size = size, mu = mu)
+#   }
+#   return(ksn_chain + kq)
+# }
 
 
 ################################################################################
