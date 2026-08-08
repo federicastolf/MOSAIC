@@ -12,12 +12,10 @@ rm(list = ls())
 source("functs/helper.R")
 source("functs/rarefaction.R")
 
-# Nsim = 25
-Nsim = 3
+Nsim = 25
 beta = c(-3, 0.5, -0.3)
 H = length(beta)
-# Q_list = c(5, 8, 10, 15, 20, 25, 30)  
-Q_list = c(2, 3)  
+Q_list = c(5, 8, 10, 15, 20, 25, 30)  
 a_phi_true = 4
 b_phi_true = 2
 r0_true = 1000
@@ -51,18 +49,21 @@ run_mosaic = function(sim, Q, base_seed = 123) {
   stan_data = list(Q = Q, H = H, k = tt_split$k_train, n_q = tt_split$n_train,
                     m = tt_split$m_train, X = data_sim$X, b0 = b0, B0 = B0,
                     a_phi = 2, b_phi = 2, r0 = r0, nu0 = nu0)
-  # fit_sim = stan(file = "functs/MOSAIC_NegBin.stan", data = stan_data, seed = sim_seed,
-  #                 chains = 4, iter = 2000, warmup = 1000)
-  fit_sim = stan(file = "functs/MOSAIC_NegBin.stan", data = stan_data, seed = sim_seed,
-                chains = 4, iter = 200, warmup = 100)
+  fit_sim = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = sim_seed,
+                  chains = 4, iter = 2000, warmup = 1000)
   post_param = rstan::extract(fit_sim, pars = c("alpha_out", "theta_out"))
   
+  # p_0(alpha, theta, n) = prod_q p_{0,q}(alpha_q, theta_q, n_q)
+  p0_all = Reduce(`*`, lapply(1:Q, function(q)
+    d_n(n_q = tt_split$n_train[q], a_q = -post_param$alpha_out[, q],
+        b_q = post_param$alpha_out[, q] + post_param$theta_out[, q])))
   pred_df = do.call(rbind, lapply(1:Q, function(q) {
     g1 = rar_pred_Kgroup(alphaq = post_param$alpha_out[, q], 
                          thetaq = post_param$theta_out[, q],
-                              r0 = r0, nu0 = nu0, nq = tt_split$n_train[q],
-                              kq = tt_split$kq_train[q],
-                              sq = tt_split$n_test[q], seed = sim_seed)
+                         r0 = r0, nu0 = nu0, nq = tt_split$n_train[q],
+                         kq = tt_split$kq_train[q],
+                         sq = tt_split$n_test[q], seed = sim_seed,
+                         p0_all = p0_all, k = tt_split$k_train)
     true_q = accum_test[accum_test$group == q, ]
     data.frame(sim = sim, Q = Q, q = q, s = seq_len(tt_split$n_test[q]),
                mean = apply(g1, 1, mean), true = true_q$n_feat) %>%
@@ -133,6 +134,5 @@ res_BB = bind_rows(lapply(Q_list, function(Q) {
 }))
 
 
-# save(res_pBBI, file = "resDCC/simSpecific_QmulPBBI.RData")
-# save(res_BB,   file = "resDCC/simSpecific_Qmul_BB.RData")
+
 
