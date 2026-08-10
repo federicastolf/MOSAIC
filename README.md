@@ -9,13 +9,13 @@ Code and data for the analysis contained in Stolf, Rigon & Dunson (2026).
   - [rarefaction.R](rfunctsarefaction.R) contains R functions to compute empirical and model-based site-specific rarefaction curves and rarefaction surfaces for shared species.
 
 - #### fungi_analysis
-  - [fungiGSSP.Rdata](fungiGSSP.Rdata) are the fungi data from the Global Spore Sampling Project analyzed in the paper.
-  - [fitFungi.R](fitFungi.R) contains the code to replicate the fungal biodiversity analysis presented in Section 5 of the paper.
-  - [fungi_oos_sm.R](fungi_oos_sm.R) contains the code to replicate the out-of-sample experiments for the fungi data presented in the supplementary material.
+  - [fungiGSSP.Rdata](fungi_analysis/fungiGSSP.Rdata) are the fungi data from the Global Spore Sampling Project analyzed in the paper.
+  - [fitFungi.R](fungi_analysis/fitFungi.R) contains the code to replicate the fungal biodiversity analysis presented in Section 5 of the paper.
+  - [fungi_oos_sm.R](fungi_analysis/fungi_oos_sm.R) contains the code to replicate the out-of-sample experiments for the fungi data presented in the supplementary material.
   
 - #### simulations
-  - [sim_Kq.R](sim_Kq.R) contains the code to replicate the experiments of the simulation study on the predictions of the site-specific rarefaction curves.
-  - [sim_coverage.R](sim_coverage.R) and [sim_sm.R](sim_sm.R) contains the code to replicate the additional simulations for coverage and varying number of sites in the supplementary material.
-  - [sim_shared.R](sim_shared.R) contains the code to replicate the experiments of the simulation study on the rarefaction surfaces for shared species.
+  - [sim_Kq.R](simulations/sim_Kq.R) contains the code to replicate the experiments of the simulation study on the predictions of the site-specific rarefaction curves.
+  - [sim_coverage.R](simulations/sim_coverage.R) and [sim_sm.R](simulations/sim_sm.R) contains the code to replicate the additional simulations for coverage and varying number of sites in the supplementary material.
+  - [sim_shared.R](simulations/sim_shared.R) contains the code to replicate the experiments of the simulation study on the rarefaction surfaces for shared species.
 
-The script "example.R(example.R)" shows an example of the use of the available routines.
+The script "[example.R](example.R)" shows an example of the use of the available routines.
