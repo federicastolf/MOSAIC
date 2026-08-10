@@ -25,7 +25,6 @@ void update_WT_inplace(arma::mat& W, arma::mat& T,
       prob3 / prob_sum
     );
     
-    // Count zeros in this column
     std::vector<int> zero_rows;
     for(int i = 0; i < nq; i++) {
       if(W(i, j) == 0.0 && T(i, j) == 0.0) {
@@ -55,7 +54,6 @@ void update_WT_inplace(arma::mat& W, arma::mat& T,
     }
   }
   
-  // For columns N_prev to N-1 (if N > N_prev), set to zero
   if(N > N_prev) {
     for(int j = N_prev; j < N; j++) {
       W.col(j).zeros();
@@ -88,7 +86,6 @@ double BetaDiversity_vec(const arma::vec& etap, const arma::vec& etaq) {
 arma::mat BetaDiversity_Mat(List eta) {
   int ng = eta.size();
   
-  // Get number of samples from first group
   List eta0 = as<List>(eta[0]);
   int Nsampl = eta0.size();
   
@@ -102,7 +99,6 @@ arma::mat BetaDiversity_Mat(List eta) {
     for (int q = p + 1; q < ng; ++q) {
       List eta_q = as<List>(eta[q]);
       
-      // For each sample iteration
       for(int s = 0; s < Nsampl; ++s) {
         arma::vec vec_p = as<arma::vec>(eta_p[s]);
         arma::vec vec_q = as<arma::vec>(eta_q[s]);

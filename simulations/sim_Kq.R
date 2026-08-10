@@ -27,7 +27,7 @@ B0 = diag(1, H)
 r0 = 10
 
 #-------# data-generation helper #-----------#
-make_data <- function(n, Q, beta, a_phi_true, b_phi_true, r0_true, nu0_true, 
+make_data = function(n, Q, beta, a_phi_true, b_phi_true, r0_true, nu0_true, 
                       sim_seed, misspecified) {
   if (misspecified) {
     synt_dataH(n = n, Q = Q, beta = beta, a_phi = a_phi_true, b_phi = b_phi_true, 

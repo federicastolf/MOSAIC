@@ -109,6 +109,7 @@ convertY_tolist = function(Y, n){
 }
 
 #---# Counts the number of columns with at least one 1 per group #---#
+
 compute_Kq = function(Y_list, labels = NULL) {
   out = sapply(Y_list, function(Y) sum(colSums(Y) > 0))
   if (!is.null(labels)) names(out) = labels
@@ -116,7 +117,7 @@ compute_Kq = function(Y_list, labels = NULL) {
 }
 
 
-#------------------# Jaccard and Sorensen dissimilarity index #----------------#
+#------------------# Jaccard and Ochiai dissimilarity index #----------------#
 
 jaccard_diss = function(x, y) {
   intersection = sum(x & y)
@@ -144,26 +145,25 @@ ochiai_diss = function(x, y) {
   return(1 - oc)
 }
 
-Betadiss_data = function(Y, n, method){
+Betadiss_data = function(Y, n, method = c("Jaccard", "Sorensen", "Ochiai")){
+  method = match.arg(method)
+  dissfun = switch(method,
+                   Jaccard  = jaccard_diss,
+                   Sorensen = sorensen_diss,
+                   Ochiai   = ochiai_diss)
   ngroup = length(n)
   ends_n = cumsum(n)
   starts_n = c(1, head(ends_n, -1) + 1)
   dissAll = rep(0, (ngroup*(ngroup-1))/2)
-  id=1
+  id = 1
   for(q in 1:(ngroup-1)){
-    Yg = Y[starts_n[q]:ends_n[q], ]
+    Yg = Y[starts_n[q]:ends_n[q], , drop = FALSE]
     indq = as.integer(colSums(Yg == 1) > 0)
     for(p in (q+1):ngroup){
-      Yp = Y[starts_n[p]:ends_n[p], ]
+      Yp = Y[starts_n[p]:ends_n[p], , drop = FALSE]
       indp = as.integer(colSums(Yp == 1) > 0)
-      if(method=="Jaccard"){
-        dissAll[id] = jaccard_diss(indp, indq)
-        id = id+1
-      }
-      if(method=="Sorensen"){
-        dissAll[id] = sorensen_diss(indp, indq)
-        id = id+1
-      }
+      dissAll[id] = dissfun(indp, indq)
+      id = id + 1
     }
   }
   return(dissAll)

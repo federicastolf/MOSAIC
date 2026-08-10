@@ -132,7 +132,7 @@ dfpred_23 = surface_results[["2_3"]]$dfpred
 
 #---# plot posterior mean vs empirical #---#
 
-shared_limits <- range(c(dfpred_13$mean, dfemp_13_test$shared, dfpred_12$mean, 
+shared_limits = range(c(dfpred_13$mean, dfemp_13_test$shared, dfpred_12$mean, 
                          dfemp_12_test$shared, dfpred_23$mean, dfemp_23_test$shared))
 
 df_surface_main <- bind_rows(
@@ -148,22 +148,6 @@ df_surface_main$type <- factor(df_surface_main$type,
                                levels = c("Empirical", "Predicted"))
 df_surface_main$pair <- factor(df_surface_main$pair, levels = c("1-2", "1-3", "2-3"))
  
-# plot_share_main = ggplot(df_surface_main, aes(x = s, y = t, fill = value)) +
-#   geom_raster(interpolate = FALSE) +
-#   scale_fill_gradientn(colors = c("white", "lightblue", "steelblue3", "darkblue",
-#                                   "black"), limits = shared_limits) +
-#   facet_grid(type ~ pair) +                  
-#   labs(fill = TeX("$C_{s_p,s_q}^{(n_p,n_q)}$"), x = TeX("$s_p$"), y = TeX("$s_q$")) +
-#   theme_minimal() +
-#   theme(axis.title.x = element_text(size = 13), axis.title.y = element_text(size = 13),
-#         axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10),
-#         legend.title = element_text(size = 13), legend.text = element_text(size = 10),
-#         plot.title = element_text(hjust = 0.5, size = 13),
-#         strip.background.x = element_rect(fill = "grey70", color = NA),  
-#         strip.background.y = element_blank(), strip.text.x = element_text(size = 12),
-#         strip.text.y = element_text(size = 12))
-# plot_share_main
-
 plot_share_main_o2 = ggplot(df_surface_main, aes(x = s, y = t, z = value)) +
   geom_contour_filled(bins = 15) +
   scale_fill_manual(values = colorRampPalette(c("white", "lightblue", "steelblue3", 
@@ -204,23 +188,6 @@ df_surface_supp$pair = factor(df_surface_supp$pair, levels = c("1-2", "1-3", "2-
 
 shared_limits_supp = range(c(dfpred_12$lower, dfpred_12$upper,dfpred_13$lower, 
                              dfpred_13$upper, dfpred_23$lower, dfpred_23$upper))
-
-# supp_share = ggplot(df_surface_supp, aes(x = s, y = t, fill = value)) +
-#   geom_raster(interpolate = FALSE) +
-#   scale_fill_gradientn(colors = c("white", "lightblue", "steelblue3", "darkblue", 
-#                                   "black"), limits = shared_limits_supp) +
-#   facet_grid(type ~ pair) +
-#   labs(fill = TeX("$C_{s_p,s_q}^{(n_p,n_q)}$"), x = TeX("$s_p$"), y = TeX("$s_q$")) +
-#   theme_minimal() +
-#   theme(axis.title.x = element_text(size = 13), axis.title.y = element_text(size = 13),
-#         axis.text.x = element_text(size = 10), axis.text.y  = element_text(size = 10),
-#         legend.title = element_text(size = 13), legend.text  = element_text(size = 10),
-#         plot.title = element_text(hjust = 0.5, size = 13),
-#         strip.background.x = element_rect(fill = "grey70", color = NA),
-#         strip.background.y = element_blank(),          
-#         strip.text.x = element_text(size = 12),
-#         strip.text.y = element_blank())       
-# supp_share
 
 supp_share = ggplot(df_surface_supp, aes(x = s, y = t, z = value)) +
   geom_contour_filled(bins = 15) +

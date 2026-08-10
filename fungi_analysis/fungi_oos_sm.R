@@ -7,7 +7,7 @@ options(mc.cores = 4)
 
 rm(list=ls())
 
-load("data/fungiGSSP.Rdata")
+load("fungi_analysis/fungiGSSP.Rdata")
 source("functs/helper.R")
 source("functs/rarefaction.R")
 
@@ -42,8 +42,6 @@ stan_data = list(Q = Q, H = H, k = tt_split$k_train, n_q = tt_split$n_train,
 fit_fungi_train = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = 434,
                  chains = 4, iter = 2000, warmup = 1000)
 
-#load("/Users/stolffederica/Library/CloudStorage/Dropbox/ActiveResearch/Pex_IBP/code/code_pBB/fungi_analysis/resDCC/stan_fungi300_train2.Rdata")
-
 post_param = rstan::extract(fit_fungi_train, pars = c("alpha_out", "theta_out"))
 c_train = shared_species_pairs(tt_split$Y_train)
 
@@ -69,10 +67,6 @@ dfpred_13 = surface_results[["BAV-FTS"]]$dfpred
 dfpred_23 = surface_results[["VII-YAK"]]$dfpred
 
 # plot posterior mean vs empirical 
-
-# shared_limits <- range(c(dfpred_13$mean, dfemp_13_test$shared, dfpred_12$mean, 
-#                          dfemp_12_test$shared, dfpred_23$mean, dfemp_23_test$shared))
-
 df_surface_main = bind_rows(
   dfemp_12_test %>% mutate(value = shared, pair = "HAI-SAN", type = "Empirical"),
   dfemp_13_test %>% mutate(value = shared, pair = "BAV-FTS", type = "Empirical"),

@@ -11,7 +11,7 @@ options(mc.cores = 4)
 
 rm(list=ls())
 
-load("data/fungiGSSP.Rdata")
+load("fungi_analysis/fungiGSSP.Rdata")
 source("functs/gibbs_mosaic.R")
 source("functs/helper.R")
 source("functs/rarefaction.R")
@@ -50,8 +50,6 @@ stan_data = list(Q = Q, H = H, k = k, n_q = n, m = m, X = Xcov, b0 = b0, B0 = B0
                  a_phi = a_phi, b_phi = b_phi, r0 = r0, nu0 = nu0)
 fit_fungi = stan(file = "functs/mosaic_NegBin.stan", data = stan_data, seed = 434,
                  chains = 4, iter = 2000, warmup = 1000)
-
-# load("/Users/stolffederica/Library/CloudStorage/Dropbox/ActiveResearch/Pex_IBP/code/code_pBB/fungi_analysis/resDCC/stan_fungi4_gssp300.Rdata")
 
 #----# posterior of zeta #----#
 zeta_post = rstan::extract(fit_fungi, pars = c("beta"))[[1]]
@@ -105,8 +103,6 @@ occ_fungi9 = gibbs_mosaic_parallel(Y = Y, alpha_post = alpha_post,
                                  mseed = mseed, n_cores = 34)
 betaDiv_post9 = BetaDiversity_Mat(occ_fungi9$eta)
 rm(occ_fungi9)
-
-load("/Users/stolffederica/Library/CloudStorage/Dropbox/ActiveResearch/Pex_IBP/code/code_pBB/fungi_analysis/resDCC/betaDiv300_gssp.Rdata")
 
 # helper plot comparison between different values of sigma
 make_beta_heatmap = function(betaDiv_post, title, ord_names = NULL) {
@@ -213,14 +209,14 @@ pJac = pheatmap(Jac_mat1, treeheight_row = 0, treeheight_col = 0,
                 annotation_legend = FALSE)
 
 # Ochiai
-Och <- 1 - Betadiss_data(Y, Xgroup$n, "Ochiai")
-Och_mat <- diag(1, length(lab_group))
-Och_mat[lower.tri(Och_mat)] <- Och
-Och_mat[upper.tri(Och_mat)] <- t(Och_mat)[upper.tri(Och_mat)]
-colnames(Och_mat) <- rownames(Och_mat) <- lab_group
-Och_mat1 <- Och_mat[ord_names, ord_names]
-diag(Och_mat1) <- NA
-pOch <- pheatmap(Och_mat1,
+Och = 1 - Betadiss_data(Y, Xgroup$n, "Ochiai")
+Och_mat = diag(1, length(lab_group))
+Och_mat[lower.tri(Och_mat)] = Och
+Och_mat[upper.tri(Och_mat)] = t(Och_mat)[upper.tri(Och_mat)]
+colnames(Och_mat) <- rownames(Och_mat) = lab_group
+Och_mat1 = Och_mat[ord_names, ord_names]
+diag(Och_mat1) = NA
+pOch = pheatmap(Och_mat1,
                  treeheight_row = 0, treeheight_col = 0,
                  color = colorRampPalette(c("white", "steelblue1", "dodgerblue4"))(100),
                  cluster_rows = FALSE, cluster_cols = FALSE,
@@ -232,7 +228,7 @@ pOch <- pheatmap(Och_mat1,
                  annotation_names_row = FALSE, annotation_row = annotation_row,
                  annotation_legend = FALSE)
 
-comp_betadiv <- grid.arrange(BD_plotmean$gtable, pJac$gtable, pOch$gtable, nrow = 1)
+comp_betadiv = grid.arrange(BD_plotmean$gtable, pJac$gtable, pOch$gtable, nrow = 1)
 
 # ggsave(plot = comp_betadiv, filename = "fungi_analysis/figures/comp_betadiv_oc.png",
 #       width = 16, height = 5.4)
@@ -310,7 +306,7 @@ make_site_plot = function(site_name, q, accum_groups, post_param, Xgroup, sigma_
     pred = rar_pred_Kgroup(alphaq = post_param$alpha_out[, q], 
                            thetaq = post_param$theta_out[, q], r0 = r0, nu0 = nu0,
                            nq = 0, kq = 0, sq = Xgroup$n[q], seed = mseed,
-                           sigmaq = sig, , p0_all = rep(1, B), k = 0)
+                           sigmaq = sig, p0_all = rep(1, B), k = 0)
     df = data.frame(s = 1:nrow(pred), mean = rowMeans(pred),
                     lo = apply(pred, 1, quantile, probs = 0.025),
                     hi = apply(pred, 1, quantile, probs = 0.975),
@@ -347,7 +343,7 @@ make_site_plot = function(site_name, q, accum_groups, post_param, Xgroup, sigma_
   p
 }
 
-B = nrow(post_param$alpha_out)
+B = nrow(alpha_post)
 global_ylim = local({
   y_pred_hi = unlist(lapply(sites_info, function(s) {
     unlist(lapply(sigma_vals, function(sig) {
@@ -467,7 +463,6 @@ results = lapply(pairs_list, function(pr) {
   build_shared_data(pr$q, pr$p, pr$name, s_aug = s_aug, B = B)
 })
 
-# load("/Users/stolffederica/Library/CloudStorage/Dropbox/ActiveResearch/Pex_IBP/code/code_pBB/fungi_analysis/resDCC/res_semitrain4.Rdata")
 
 all_emp = do.call(rbind, lapply(results, `[[`, "emp"))
 all_semi = do.call(rbind, lapply(results, `[[`, "semi"))

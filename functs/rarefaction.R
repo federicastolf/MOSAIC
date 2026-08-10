@@ -34,8 +34,8 @@ d_n = function(n_q, a_q, b_q) {
 
 # model-based prediction for group-specific rarefaction curves
 
-rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed, 
-                           p0_all, k, sigmaq = NULL) {
+rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed, p0_all, k, 
+                           sigmaq = NULL) {
   set.seed(seed)
   B = length(alphaq)
   s_vec = 1:sq
@@ -61,29 +61,6 @@ rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed,
   return(ksn_chain + kq)
 }
 
-
-# rar_pred_Kgroup = function(alphaq, thetaq, r0, nu0, nq, kq, sq, seed, 
-#                            sigmaq = NULL) {
-#   set.seed(seed)
-#   B = length(alphaq)
-#   s_vec = 1:sq
-#   ksn_chain = matrix(0, nrow = length(s_vec), ncol = B)
-#   for (b in 1:B) {
-#     alphab = alphaq[b]
-#     thetab = thetaq[b]
-#     dn = d_n(n = nq, a = -alphab, b = alphab + thetab)
-#     if (is.null(sigmaq)){
-#       ds = d_n(n = s_vec, a = -alphab, b = alphab + thetab + nq)
-#     }
-#     else{
-#       ds = d_n(n = s_vec, a = -alphab, b =  sigmaq*(alphab + thetab) + nq)
-#     }
-#     size = r0 + kq
-#     mu = size * (1 - ds) * dn / (r0 / nu0 + 1 - dn)
-#     ksn_chain[, b] = rnbinom(length(s_vec), size = size, mu = mu)
-#   }
-#   return(ksn_chain + kq)
-# }
 
 
 ################################################################################
