@@ -163,7 +163,7 @@ comp_beta = grid.arrange(p3$plot$gtable, p6$plot$gtable, p9$plot$gtable, nrow = 
 #        width = 17, height = 5.5)
 
 
-#-------# comparison with Jaccard #----------#
+#-------# comparison with Jaccard + Ochiai #----------#
 
 betaSIM_median = apply(1 - betaDiv_post6, 1, median)
 matbSIM_median = diag(1, Q)
@@ -212,10 +212,31 @@ pJac = pheatmap(Jac_mat1, treeheight_row = 0, treeheight_col = 0,
                 annotation_names_row = FALSE, annotation_row = annotation_row,
                 annotation_legend = FALSE)
 
-comp_betadiv = grid.arrange(BD_plotmean$gtable, pJac$gtable, nrow = 1)
+# Ochiai
+Och <- 1 - Betadiss_data(Y, Xgroup$n, "Ochiai")
+Och_mat <- diag(1, length(lab_group))
+Och_mat[lower.tri(Och_mat)] <- Och
+Och_mat[upper.tri(Och_mat)] <- t(Och_mat)[upper.tri(Och_mat)]
+colnames(Och_mat) <- rownames(Och_mat) <- lab_group
+Och_mat1 <- Och_mat[ord_names, ord_names]
+diag(Och_mat1) <- NA
+pOch <- pheatmap(Och_mat1,
+                 treeheight_row = 0, treeheight_col = 0,
+                 color = colorRampPalette(c("white", "steelblue1", "dodgerblue4"))(100),
+                 cluster_rows = FALSE, cluster_cols = FALSE,
+                 fontsize = 10, legend = FALSE,
+                 show_rownames = TRUE,
+                 labels_col = lb_site,
+                 breaks = seq(0.003, 0.9, length.out = 101),
+                 na_col = "blue4", main = expression("Ochiai similarity"),
+                 annotation_names_row = FALSE, annotation_row = annotation_row,
+                 annotation_legend = FALSE)
 
-# ggsave(plot = comp_betadiv, filename = "fungi_analysis/figures/comp_betadiv.png",
-#        width = 13, height = 6.5)
+comp_betadiv <- grid.arrange(BD_plotmean$gtable, pJac$gtable, pOch$gtable, nrow = 1)
+
+# ggsave(plot = comp_betadiv, filename = "fungi_analysis/figures/comp_betadiv_oc.png",
+#       width = 16, height = 5.4)
+
 
 
 #----# beta-diversity density plot #----#
@@ -245,7 +266,7 @@ df_pairs$pair = factor(df_pairs$pair, levels = pair_levels)
 pdens = ggplot(df_pairs, aes(x = value)) +
   geom_density(fill = NA, color = "black", adjust = 2, linewidth = 0.25) +
   facet_grid(. ~ pair, scales = "free") +
-  labs(x = expression(beta[pq]), y = "Density") +
+  labs(x = expression(beta[qr]), y = "Density") +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 3.5)) +
   theme_minimal() +
   theme(axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 6.5), 
@@ -283,12 +304,13 @@ sigma_colors = setNames(
 make_site_plot = function(site_name, q, accum_groups, post_param, Xgroup, sigma_vals,
                           sigma_colors, r0, nu0, mseed, ylim = NULL, 
                           show_legend = FALSE, show_y_axis = TRUE) {
+  B = nrow(post_param$alpha_out)
   acc_site = accum_groups %>% filter(group == site_name)
   pred_list = lapply(sigma_vals, function(sig) {
     pred = rar_pred_Kgroup(alphaq = post_param$alpha_out[, q], 
                            thetaq = post_param$theta_out[, q], r0 = r0, nu0 = nu0,
                            nq = 0, kq = 0, sq = Xgroup$n[q], seed = mseed,
-                           sigmaq = sig)
+                           sigmaq = sig, , p0_all = rep(1, B), k = 0)
     df = data.frame(s = 1:nrow(pred), mean = rowMeans(pred),
                     lo = apply(pred, 1, quantile, probs = 0.025),
                     hi = apply(pred, 1, quantile, probs = 0.975),
@@ -307,7 +329,7 @@ make_site_plot = function(site_name, q, accum_groups, post_param, Xgroup, sigma_
     scale_color_manual(values = sigma_colors, name = expression(sigma)) +
     scale_fill_manual(values  = sigma_colors, name = expression(sigma)) +
     coord_cartesian(ylim = ylim) +
-    labs(x = "Sampling effort", y = TeX("$L_{n_p,n_q}$")) +
+    labs(x = "Sampling effort", y = TeX("$L_{q,n_q}$")) +
     facet_wrap(~ facet) +
     theme_minimal() +
     theme(
@@ -325,13 +347,14 @@ make_site_plot = function(site_name, q, accum_groups, post_param, Xgroup, sigma_
   p
 }
 
+B = nrow(post_param$alpha_out)
 global_ylim = local({
   y_pred_hi = unlist(lapply(sites_info, function(s) {
     unlist(lapply(sigma_vals, function(sig) {
       pred = rar_pred_Kgroup(
         alphaq = post_fungi$alpha_out[, s$q], thetaq = post_fungi$theta_out[, s$q], 
         r0 = r0, nu0 = nu0, nq = 0, kq = 0, sq = Xgroup$n[s$q], seed = mseed, 
-        sigmaq = sig
+        sigmaq = sig, p0_all = rep(1, B), k = 0
       )
       apply(pred, 1, quantile, probs = 0.975)
     }))
@@ -470,7 +493,7 @@ pall_semi = ggplot() +
               alpha = 0.4) +
   geom_line(data = all_pred, aes(x, mean), linewidth = 0.7, color = "steelblue") +
   facet_wrap(~ pair, nrow = 1, scales = "free_x") +
-  labs(x = "Sampling effort", y = TeX("$C_{n_p, n_q}$")) +
+  labs(x = "Sampling effort", y = TeX("$C_{n_q, n_r}$")) +
   theme_minimal() +
   theme(
     strip.background = element_rect(fill = "grey70", color = NA),

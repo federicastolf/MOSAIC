@@ -100,7 +100,7 @@ plot_fungi_oos = ggplot(df_surface_main, aes(x = s, y = t, z = value)) +
     values = colorRampPalette(c("lightblue1", "steelblue2","royalblue3","darkblue", 
                                 "black"))(length(breaks_custom) - 1)) +
   facet_grid(type ~ pair) +
-  labs(fill = TeX("$C_{s_p,s_q}^{(n_p,n_q)}$"), x = TeX("$s_p$"), y = TeX("$s_q$")) +
+  labs(fill = TeX("$C_{s_q,s_r}^{(n_q,n_r)}$"), x = TeX("$s_q$"), y = TeX("$s_r$")) +
   theme_minimal() +
   theme(axis.title.x = element_text(size = 13), axis.title.y = element_text(size = 13),
         axis.text.x  = element_text(size = 10), axis.text.y  = element_text(size = 10),

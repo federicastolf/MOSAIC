@@ -134,6 +134,16 @@ sorensen_diss = function(x, y) {
   return(1-sr)
 }
 
+ochiai_diss = function(x, y) {
+  A = sum(x & y)
+  sx = sum(x)
+  sy = sum(y)
+  if (sx == 0 && sy == 0) return(0)   
+  if (sx == 0 || sy == 0) return(1)   
+  oc = A / sqrt(sx * sy)             
+  return(1 - oc)
+}
+
 Betadiss_data = function(Y, n, method){
   ngroup = length(n)
   ends_n = cumsum(n)
