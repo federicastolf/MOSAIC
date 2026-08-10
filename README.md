@@ -18,4 +18,4 @@ Code and data for the analysis contained in Stolf, Rigon & Dunson (2026).
   - [sim_coverage.R](simulations/sim_coverage.R) and [sim_sm.R](simulations/sim_sm.R) contains the code to replicate the additional simulations for coverage and varying number of sites in the supplementary material.
   - [sim_shared.R](simulations/sim_shared.R) contains the code to replicate the experiments of the simulation study on the rarefaction surfaces for shared species.
 
-The script "[example.R](example.R)" shows an example of the use of the available routines.
+The script [example.R](example.R) shows an example of the use of the available routines.
