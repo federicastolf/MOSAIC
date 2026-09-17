@@ -213,7 +213,7 @@ Och = 1 - Betadiss_data(Y, Xgroup$n, "Ochiai")
 Och_mat = diag(1, length(lab_group))
 Och_mat[lower.tri(Och_mat)] = Och
 Och_mat[upper.tri(Och_mat)] = t(Och_mat)[upper.tri(Och_mat)]
-colnames(Och_mat) <- rownames(Och_mat) = lab_group
+colnames(Och_mat) = rownames(Och_mat) = lab_group
 Och_mat1 = Och_mat[ord_names, ord_names]
 diag(Och_mat1) = NA
 pOch = pheatmap(Och_mat1,
