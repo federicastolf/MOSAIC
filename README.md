@@ -1,4 +1,4 @@
-# Supporting information for "Bayesian inference on beta diversity via feature allocation models with imperfect detection"
+# Supporting information for "Bayesian inference on beta diversity via feature allocation models"
 
 Code and data for the analysis contained in Stolf, Rigon & Dunson (2026).
 
